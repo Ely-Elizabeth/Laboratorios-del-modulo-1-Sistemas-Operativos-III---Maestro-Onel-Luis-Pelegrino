@@ -1,0 +1,134 @@
+==================================================
+PRACTICA 2: CONFIGURACION DE PARAMETROS DE RED
+==================================================
+Estudiante: Elianny Adames Reyes
+Matricula: 2025-0771
+Carrera: Seguridad Informatica
+Institucion: ITLA - Instituto Tecnologico de Las Americas
+
+--------------------------------------------------
+OBJETIVO
+--------------------------------------------------
+Configurar la red usando DHCP e IP estatica desde la terminal, explicar
+todas las formas que permite el sistema, y configurar los DNS de Google
+(8.8.8.8 y 8.8.4.4).
+
+NOTA: las direcciones 192.168.1.x son de ejemplo. Se deben cambiar por
+las de la red real (ver con: ip a  y  ip route).
+
+--------------------------------------------------
+0. VER LA INTERFAZ DE RED
+--------------------------------------------------
+ip a
+  -> Muestra las tarjetas de red y sus direcciones. La interfaz se llama
+     eth0.
+
+--------------------------------------------------
+FORMA 1: COMANDO "ip" (TEMPORAL)
+--------------------------------------------------
+sudo ip addr add 192.168.1.50/24 dev eth0
+  -> Asigna una direccion IP a la tarjeta.
+sudo ip route add default via 192.168.1.1
+  -> Define el gateway (puerta de salida a internet).
+sudo ip link set eth0 up
+  -> Enciende la tarjeta de red.
+sudo dhclient eth0
+  -> Solicita una IP automatica por DHCP.
+
+Los cambios se pierden al reiniciar.
+
+--------------------------------------------------
+FORMA 2: "ifconfig" Y "route" (TEMPORAL, HERRAMIENTAS VIEJAS)
+--------------------------------------------------
+sudo ifconfig eth0 192.168.1.50 netmask 255.255.255.0
+  -> Asigna IP y mascara a la tarjeta.
+sudo route add default gw 192.168.1.1
+  -> Define el gateway.
+
+Los cambios se pierden al reiniciar.
+
+--------------------------------------------------
+FORMA 3: NetworkManager CON "nmcli" / "nmtui" (PERMANENTE)
+--------------------------------------------------
+nmcli con show
+  -> Lista las conexiones existentes.
+
+IP estatica + DNS de Google:
+sudo nmcli con mod "Wired connection 1" ipv4.method manual ipv4.addresses 192.168.1.50/24 ipv4.gateway 192.168.1.1 ipv4.dns "8.8.8.8 8.8.4.4"
+sudo nmcli con up "Wired connection 1"
+
+Volver a DHCP:
+sudo nmcli con mod "Wired connection 1" ipv4.method auto ipv4.addresses "" ipv4.gateway ""
+sudo nmcli con up "Wired connection 1"
+
+"nmtui" hace lo mismo con un menu en la terminal.
+Los cambios son permanentes.
+
+--------------------------------------------------
+FORMA 4: ARCHIVO /etc/network/interfaces (ifupdown)
+--------------------------------------------------
+sudo nano /etc/network/interfaces
+
+DHCP:
+  auto eth0
+  iface eth0 inet dhcp
+
+IP estatica:
+  auto eth0
+  iface eth0 inet static
+      address 192.168.1.50
+      netmask 255.255.255.0
+      gateway 192.168.1.1
+      dns-nameservers 8.8.8.8 8.8.4.4
+
+sudo systemctl restart networking
+  -> Reinicia el servicio de red para aplicar los cambios.
+
+Nota: si NetworkManager esta activo puede chocar con este metodo.
+
+--------------------------------------------------
+FORMA 5: systemd-networkd
+--------------------------------------------------
+sudo nano /etc/systemd/network/10-eth0.network
+
+  [Match]
+  Name=eth0
+  [Network]
+  Address=192.168.1.50/24
+  Gateway=192.168.1.1
+  DNS=8.8.8.8
+  DNS=8.8.4.4
+
+(Para DHCP se usa DHCP=yes dentro de [Network].)
+
+sudo systemctl enable --now systemd-networkd
+  -> Activa el servicio y lo deja para que arranque siempre.
+
+--------------------------------------------------
+CONFIGURAR DNS DE GOOGLE
+--------------------------------------------------
+Con nmcli (recomendado, permanente):
+  ipv4.dns "8.8.8.8 8.8.4.4"   (ver Forma 3)
+
+Editando el archivo directamente:
+sudo nano /etc/resolv.conf
+  nameserver 8.8.8.8
+  nameserver 8.8.4.4
+
+Nota: NetworkManager puede sobrescribir /etc/resolv.conf.
+
+--------------------------------------------------
+VERIFICACION
+--------------------------------------------------
+cat /etc/resolv.conf
+  -> Muestra los DNS que usa el sistema.
+nslookup google.com
+  -> Comprueba que el DNS traduce nombres.
+ping -c 3 google.com
+  -> Envia 3 paquetes a Google para probar la conexion.
+
+--------------------------------------------------
+RESULTADO
+--------------------------------------------------
+Red configurada con DHCP e IP estatica, y DNS de Google (8.8.8.8 y
+8.8.4.4) funcionando.

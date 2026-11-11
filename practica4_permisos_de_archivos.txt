@@ -1,0 +1,78 @@
+==================================================
+PRACTICA 4: GESTION DE PERMISOS DE ARCHIVOS
+==================================================
+Estudiante: Elianny Adames Reyes
+Matricula: 2025-0771
+Carrera: Seguridad Informatica
+Institucion: ITLA - Instituto Tecnologico de Las Americas
+
+--------------------------------------------------
+OBJETIVO
+--------------------------------------------------
+Crear carpetas y archivos, editarlos con vi, modificar permisos, copiar
+y eliminar.
+
+--------------------------------------------------
+1. CREAR CARPETA Y ARCHIVO CON vi
+--------------------------------------------------
+mkdir materia
+  -> Crea la carpeta "materia".
+cd materia
+  -> Entra a la carpeta.
+vi estudiante.txt
+  -> Abre/crea el archivo con el editor vi.
+
+Dentro de vi:
+  - Presionar "i" para escribir.
+  - Escribir:  Elianny Adames Reyes
+               Matricula: 2025-0771
+  - Presionar Esc, escribir :wq y Enter para guardar y salir.
+
+--------------------------------------------------
+2. PERMISOS: SOLO EL PROPIETARIO CON CONTROL TOTAL
+--------------------------------------------------
+ls -l estudiante.txt
+  -> Muestra los permisos actuales.
+chmod 700 estudiante.txt
+  -> Propietario: 7 (rwx), grupo: 0, otros: 0.
+ls -l estudiante.txt
+
+Valores: 4 = leer (r), 2 = escribir (w), 1 = ejecutar (x). Se suman.
+Control total = 4+2+1 = 7.
+
+--------------------------------------------------
+3. PERMISOS: SOLO EL GRUPO PROPIETARIO CON CONTROL TOTAL
+--------------------------------------------------
+chmod 070 estudiante.txt
+  -> Propietario: 0, grupo: 7 (rwx), otros: 0.
+ls -l estudiante.txt
+
+Nota: con 070 el propietario queda sin permisos, porque Linux aplica
+primero los permisos del propietario.
+
+--------------------------------------------------
+4. CARPETA materia2 Y COPIA DEL ARCHIVO
+--------------------------------------------------
+cd ..
+mkdir materia2
+sudo cp materia/estudiante.txt materia2/
+  -> Se usa sudo porque el propietario ya no tiene permiso de lectura.
+sudo chown $USER:$USER materia2/estudiante.txt
+  -> Devuelve la propiedad de la copia a mi usuario.
+sudo chmod 644 materia2/estudiante.txt
+  -> Permisos normales (propietario lee y escribe; otros leen).
+ls -l materia2
+
+--------------------------------------------------
+5. ELIMINAR LA CARPETA materia
+--------------------------------------------------
+rm -r materia
+  -> Elimina la carpeta y su contenido (-r = recursivo).
+ls
+  -> Comprueba que "materia" ya no existe. La copia sigue en materia2.
+
+--------------------------------------------------
+RESULTADO
+--------------------------------------------------
+Permisos modificados correctamente, archivo copiado a materia2 y carpeta
+materia eliminada.

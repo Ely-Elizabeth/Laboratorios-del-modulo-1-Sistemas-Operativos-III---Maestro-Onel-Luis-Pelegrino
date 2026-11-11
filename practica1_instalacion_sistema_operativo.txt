@@ -1,0 +1,59 @@
+==================================================
+PRACTICA 1: INSTALACION DEL SISTEMA OPERATIVO (KALI LINUX)
+==================================================
+Estudiante: Elianny Adames Reyes
+Matricula: 2025-0771
+Carrera: Seguridad Informatica
+Institucion: ITLA - Instituto Tecnologico de Las Americas
+
+--------------------------------------------------
+OBJETIVO
+--------------------------------------------------
+Crear una maquina virtual con los recursos necesarios, configurar su
+tarjeta de red en modo Bridge e instalar el sistema operativo Kali Linux.
+
+--------------------------------------------------
+1. CREACION DE LA MAQUINA VIRTUAL
+--------------------------------------------------
+Programa usado: VMware (o VirtualBox)
+Tipo de sistema: Linux
+Version: Debian 12.x 64-bit (Kali esta basada en Debian)
+
+Requisitos minimos de Kali Linux:
+  - RAM: 2 GB
+  - Disco: 20 GB
+  - Procesador: 1 CPU
+
+Recursos asignados a la VM (mas comodos que el minimo):
+  - RAM: 4 GB
+  - Procesadores: 2
+  - Disco: 40 GB
+
+--------------------------------------------------
+2. CONFIGURACION DE LA TARJETA DE RED (MODO BRIDGE)
+--------------------------------------------------
+Ruta: Configuracion de la VM > Network Adapter > Bridged
+
+El modo Bridge (adaptador puente) conecta la VM directamente a la red
+fisica. La VM recibe su propia direccion IP del router, como si fuera
+un equipo mas de la red.
+
+--------------------------------------------------
+3. INSTALACION DE KALI LINUX
+--------------------------------------------------
+Pasos realizados:
+  1. Iniciar la VM con el ISO de Kali Linux.
+  2. Seleccionar "Graphical Install".
+  3. Elegir idioma, pais y distribucion del teclado.
+  4. Escribir el nombre del equipo (hostname).
+  5. Crear el usuario y la contrasena.
+  6. Particionado: "Guiado - usar todo el disco".
+  7. Dejar el software por defecto.
+  8. Instalar el cargador de arranque GRUB.
+  9. Reiniciar e iniciar sesion con el usuario creado.
+
+--------------------------------------------------
+RESULTADO
+--------------------------------------------------
+Kali Linux instalado y funcionando en la maquina virtual, con la red en
+modo Bridge.

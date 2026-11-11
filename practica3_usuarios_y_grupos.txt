@@ -1,0 +1,64 @@
+==================================================
+PRACTICA 3: GESTION DE USUARIOS Y GRUPOS
+==================================================
+Estudiante: Elianny Adames Reyes
+Matricula: 2025-0771
+Carrera: Seguridad Informatica
+Institucion: ITLA - Instituto Tecnologico de Las Americas
+
+--------------------------------------------------
+OBJETIVO
+--------------------------------------------------
+Crear un usuario con permisos de administracion, crear un grupo "guest"
+con un usuario, y luego eliminarlos.
+
+--------------------------------------------------
+1. USUARIO CON MI NOMBRE Y PERMISOS DE ADMINISTRADOR
+--------------------------------------------------
+sudo adduser elianny
+  -> Crea el usuario y pide la contrasena.
+sudo usermod -aG sudo elianny
+  -> Agrega el usuario al grupo "sudo" (-a agregar sin quitar otros
+     grupos, -G indica grupo adicional). En Kali, el grupo sudo es el
+     que da permisos de administrador (esta definido en /etc/sudoers).
+groups elianny
+  -> Muestra los grupos del usuario. Debe aparecer "sudo".
+
+Prueba:
+su - elianny
+  -> Cambia al usuario elianny.
+sudo whoami
+  -> Debe responder "root" si tiene permisos de administrador.
+exit
+  -> Sale de esa sesion.
+
+--------------------------------------------------
+2. GRUPO "guest" Y UN USUARIO
+--------------------------------------------------
+sudo groupadd guest
+  -> Crea el grupo guest.
+sudo adduser invitado
+  -> Crea el usuario invitado.
+sudo usermod -aG guest invitado
+  -> Agrega invitado al grupo guest.
+getent group guest
+  -> Muestra el grupo y sus miembros (debe aparecer invitado).
+
+--------------------------------------------------
+3. ELIMINAR EL USUARIO Y EL GRUPO
+--------------------------------------------------
+sudo deluser --remove-home invitado
+  -> Elimina el usuario y su carpeta personal.
+sudo groupdel guest
+  -> Elimina el grupo guest.
+getent group guest
+  -> No debe devolver nada (el grupo ya no existe).
+
+Se elimina primero el usuario y despues el grupo.
+El usuario "elianny" no se elimina.
+
+--------------------------------------------------
+RESULTADO
+--------------------------------------------------
+Usuario con permisos de administrador creado; grupo guest y usuario
+invitado creados y luego eliminados correctamente.
